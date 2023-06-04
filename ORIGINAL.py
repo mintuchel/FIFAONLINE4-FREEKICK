@@ -2,6 +2,9 @@ from vpython import *
 
 import random
 
+# power 35-40 정도면 인게임에서 구석으로 꽂힘
+# 여기서도 35-40이면 들어감
+
 scene = canvas(width = 1400, height = 600, title = "피파온라인4")
 scene.background = color.white
 
@@ -11,7 +14,18 @@ def shootbtn(b) :
 
 btnShoot = button(text="shoot",bind=shootbtn)
 
+# direct_shot function
+def shoot_directd(direct_d) :
 
+    # direct_d have no deceleration in the given power
+    ball.v = direct_d*hat(shootvec)+vec(0,direct_d/5,0)
+    dt = 0.01
+    
+    while mag(ball.v) > 0.1 :
+        rate(1/dt)
+        ball.v+=vec(0,-g*ball.m,0)*dt
+        ball.pos += ball.v*dt
+        
 # setting
 
 ground = box(pos=vec(0,0,0),size=vec(50,0.1,50),color=color.green)
@@ -36,9 +50,6 @@ eyepos = eye2dpos + vec(0,2,0)
 
 
 shootdir = arrow(pos=ball2dpos,axis=4*hat(ball2dpos-eye2dpos),shaftwidth=0.15,color=color.black)
-
-scene.camera.pos = eyepos
-scene.camera.axis = shootdir.axis
 
 # the most important variable
 # used in final shooting
@@ -70,9 +81,4 @@ while True:
     else if s==[] :
         break
 
-if right_zd > 0 :
-    shoot_rightzd(right_zd)
-else if left_zd > 0 :
-    shoot_leftzd(left_zd)
-else if direct_d > 0 :
-    shoot_directd(direct_d)
+if direct_d > 0 : shoot_directd(direct_d)
