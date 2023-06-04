@@ -8,13 +8,17 @@ import random
 scene = canvas(width = 1400, height = 600, title = "피파온라인4")
 scene.background = color.white
 
+# constants
+g = 9.8
+rho = 1.204 # air density
+Cd = 0.3 # air resistance
+Cm = 1 # air magnus
+w = 15*pi #각속도
+
 def shootbtn(b) :
     b.disabled=True
     return b.disabled
-
-btnShoot = button(text="shoot",bind=shootbtn)
-
-# direct_shot function
+    
 def shoot_directd(direct_d) :
 
     # direct_d have no deceleration in the given power
@@ -26,6 +30,43 @@ def shoot_directd(direct_d) :
         ball.v+=vec(0,-g*ball.m,0)*dt
         ball.pos += ball.v*dt
         
+        
+def shoot_rightzd(right_zd) :
+    
+    ball.v = right_zd/2*hat(shootvec)+vec(right_zd/3,right_zd/3,-right_zd/4)
+    dt = 0.01
+    
+    while mag(ball.v) > 0.1 : 
+        rate(1/dt)
+        
+        Fg = vec(0,-g*ball.m,0)
+        Fd = -0.5*Cd*rho*(pi*ball.r**2)*mag(ball.v)**2*hat(ball.v)
+        Fm = 0.5*Cm*rho*(pi*ball.r**2)*ball.r*mag(ball.v)*w*cross(vec(0,1,0),hat(ball.v))
+    
+        Fnet = Fg+Fd+Fm
+        ball.a = Fnet/ball.m
+        
+        ball.v+=ball.a*dt
+        ball.pos+=ball.v*dt
+
+def shoot_leftzd(left_zd) :
+
+    ball.v = left_zd/2*hat(shootvec)+vec(-left_zd/3,left_zd/3,-left_zd/4)
+    dt = 0.01
+    
+    while mag(ball.v) > 0.1 : 
+        rate(1/dt)
+        
+        Fg = vec(0,-g*ball.m,0)
+        Fd = -0.5*Cd*rho*(pi*ball.r**2)*mag(ball.v)**2*hat(ball.v)
+        Fm = 0.5*Cm*rho*(pi*ball.r**2)*ball.r*mag(ball.v)*w*cross(vec(0,-1,0),hat(ball.v))
+    
+        Fnet = Fg+Fd+Fm
+        ball.a = Fnet/ball.m
+        
+        ball.v+=ball.a*dt
+        ball.pos+=ball.v*dt
+        
 # setting
 
 ground = box(pos=vec(0,0,0),size=vec(50,0.1,50),color=color.green)
@@ -34,6 +75,8 @@ ground = box(pos=vec(0,0,0),size=vec(50,0.1,50),color=color.green)
 post1 = box(pos=vec(-4,2,-20),axis=vec(1,0,0),size=vec(0.5,4,2),color=color.red) # left post
 post2 = box(pos=vec(4,2,-20),axis=vec(1,0,0),size=vec(0.5,4,2),color=color.red) # right post
 post3 = box(pos=vec(0,4.25,-20),axis = vec(1,0,0),size=vec(8.5,0.5,2),color=color.red) # top post
+
+# wall = box(pos = vec(0,10,-25),axis=vec(1,0,0),size=vec(20,20,0.5),color=color.white)
 
 # post center 정사영
 post2dpos = vec(0,0,-20)
@@ -48,8 +91,12 @@ eyedir = hat(ball2dpos-post2dpos)
 eye2dpos = vec(ball.pos.x/(ball.pos.z+20)*(18+20),0,18)
 eyepos = eye2dpos + vec(0,2,0)
 
-
 shootdir = arrow(pos=ball2dpos,axis=4*hat(ball2dpos-eye2dpos),shaftwidth=0.15,color=color.black)
+
+scene.camera.pos = eyepos
+scene.camera.axis = shootdir.axis
+
+btnShoot = button(text="shoot",bind=shootbtn)
 
 # the most important variable
 # used in final shooting
@@ -81,4 +128,9 @@ while True:
     else if s==[] :
         break
 
-if direct_d > 0 : shoot_directd(direct_d)
+if right_zd > 0 :
+    shoot_rightzd(right_zd)
+else if left_zd > 0 :
+    shoot_leftzd(left_zd)
+else if direct_d > 0 :
+    shoot_directd(direct_d)
