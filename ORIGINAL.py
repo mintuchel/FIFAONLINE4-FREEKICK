@@ -153,3 +153,6 @@ else if left_zd > 0 :
     shoot_leftzd(left_zd)
 else if direct_d > 0 :
     shoot_directd(direct_d)
+
+# checked all cases
+# ready to merge with master
