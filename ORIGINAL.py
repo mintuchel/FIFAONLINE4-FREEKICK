@@ -22,7 +22,8 @@ right_zd = 0
 left_zd = 0
 direct_d = 0
 
-dpower = 5 # power+=dpower
+#Updated dpower value
+dpower = 1 
 
 scene.waitfor('keydown')
 
@@ -41,3 +42,6 @@ while True:
     else if 'q' in s and 'd' in s :
         direct_d +=dpower
         print("direct shoot :",direct_d)
+    #if input is finished break
+    else if s==[] :
+        break
