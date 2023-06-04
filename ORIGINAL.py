@@ -1,16 +1,16 @@
 from vpython import *
-
+ 
 import random
 
 scene = canvas(width = 1400, height = 600, title = "피파온라인4")
 scene.background = color.white
+
 
 def shootbtn(b) :
     b.disabled=True
     return b.disabled
 
 btnShoot = button(text="shoot",bind=shootbtn)
-
 
 # setting
 
@@ -28,17 +28,36 @@ ball = sphere(pos=vec(random.randint(-15,15),0.3,random.randint(8,15)),radius=0.
 ball.m = 1
 ball.r = 0.2
 
+# ball pos 정사영
 ball2dpos = ball.pos - vec(0,0.3,0)
 
 eyedir = hat(ball2dpos-post2dpos)
 eye2dpos = vec(ball.pos.x/(ball.pos.z+20)*(18+20),0,18)
 eyepos = eye2dpos + vec(0,2,0)
 
-
-shootdir = arrow(pos=ball2dpos,axis=4*hat(ball2dpos-eye2dpos),shaftwidth=0.15,color=color.black)
+shootdir = arrow(pos=ball2dpos,axis=4*hat(ball2dpos-eye2dpos),shaftwidth = 0.15,color=color.black)
 
 scene.camera.pos = eyepos
 scene.camera.axis = shootdir.axis
+
+
+# update camera control to only respond to 'left' and 'right' keystroke
+angle = radians(1)
+axis = vec(0,1,0)
+origin = ball.pos
+
+while !btnShoot.disabled :
+    rate(100)
+        
+    s = keysdown()
+    print("You pressed the key", s)  
+    
+    if 'left' in s: 
+        scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
+        shootdir.axis=6*hat(scene.camera.axis)
+    if 'right' in s: 
+        scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
+        shootdir.axis=6*hat(scene.camera.axis)
 
 # the most important variable
 # used in final shooting
@@ -69,10 +88,3 @@ while True:
         print("direct shoot :",direct_d)
     else if s==[] :
         break
-
-if right_zd > 0 :
-    shoot_rightzd(right_zd)
-else if left_zd > 0 :
-    shoot_leftzd(left_zd)
-else if direct_d > 0 :
-    shoot_directd(direct_d)
