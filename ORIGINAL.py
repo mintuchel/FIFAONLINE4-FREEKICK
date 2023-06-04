@@ -19,7 +19,6 @@ ball = sphere(pos=vec(random.randint(-15,15),0.2,random.randint(8,15)),radius=0.
 ball.m = 1
 ball.r = 0.2
 
-# add starting view
 ball2dpos = ball.pos - vec(0,0.2,0)
 
 eyedir = hat(ball2dpos-post2dpos)
@@ -29,3 +28,29 @@ eyepos = eye2dpos + vec(0,2,0)
 shootdir = arrow(pos=ball2dpos,axis=6*hat(ball2dpos-eye2dpos),shaftwidth=0.2,color=color.blue)
 
 scene.camera.pos = eyepos
+
+right_zd = 0
+left_zd = 0
+direct_d = 0
+
+dpower = 1 # power+=dpower
+
+scene.waitfor('keydown')
+
+while True:
+    rate(100)  # Limit the loop rate for smooth animation
+
+    s = keysdown()  # Get the keys that are currently pressed
+
+    print(s)
+    if 'z' in s and 'right' in s :
+        right_zd += dpower
+        print("right zd Power :", right_zd)
+    else if 'z' in s and 'left' in s :
+        left_zd += dpower
+        print("left zd Power :", left_zd)
+    else if 'q' in s and 'd' in s :
+        direct_d +=dpower
+        print("direct shoot :",direct_d)
+    else if s==[] :
+        break
