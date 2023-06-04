@@ -54,3 +54,6 @@ while True:
         print("direct shoot :",direct_d)
     else if s==[] :
         break
+
+# checked all cases
+# ready to merge with master
