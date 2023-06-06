@@ -111,10 +111,10 @@ while !btnShoot.disabled :
     print("You pressed the key", s)  
     
     if 'left' in s: 
-        scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
+        scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
         shootdir.axis=6*hat(scene.camera.axis)
     if 'right' in s: 
-        scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
+        scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
         shootdir.axis=6*hat(scene.camera.axis)
 
 # the most important variable
@@ -153,6 +153,3 @@ else if left_zd > 0 :
     shoot_leftzd(left_zd)
 else if direct_d > 0 :
     shoot_directd(direct_d)
-
-# checked all cases
-# ready to merge with master
