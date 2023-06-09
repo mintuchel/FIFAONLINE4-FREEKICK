@@ -1,9 +1,12 @@
 from vpython import *
 
-import random
-
 # power 35-40 정도면 인게임에서 구석으로 꽂힘
 # 여기서도 35-40이면 들어감
+
+# ball2dpos = ball 정사영
+# eye2dpos = eye 정사영
+ 
+import random
 
 scene = canvas(width = 1400, height = 600, title = "피파온라인4")
 scene.background = color.white
@@ -19,7 +22,22 @@ def shootbtn(b) :
     b.disabled=True
     return b.disabled
 
-btnShoot = button(text="shoot",bind=shootbtn)
+# add groundhit function
+def check_groundhit() :
+    if ball.pos.y < 0.3 :
+        ball.pos.y = 0.3
+        ball.v.y = -0.8*ball.v.y
+
+# add goalposthit function
+def check_goalposthit() :
+    
+    # right left post hit
+    if 3.75 <= abs(ball.pos.x) <= 4.25 and 0 <= ball.pos.y <= 4 and -21 <= ball.pos.z <= -19 : 
+        ball.v.z = -0.3*ball.v.z
+    # top post hit
+    elif  -3.75 < ball.pos.x < 4.25 and 4 < ball.pos.y < 4.5 and -21 <= ball.pos.z <= -19 : 
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.3*ball.v.z
     
 def shoot_directd(direct_d) :
 
@@ -31,6 +49,9 @@ def shoot_directd(direct_d) :
         rate(1/dt)
         ball.v+=vec(0,-g*ball.m,0)*dt
         ball.pos += ball.v*dt
+        
+        check_groundhit()
+        check_goalposthit()
         
         
 def shoot_rightzd(right_zd) :
@@ -51,6 +72,8 @@ def shoot_rightzd(right_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
 
+        check_groundhit()
+        check_goalposthit()
         
 def shoot_leftzd(left_zd) :
 
@@ -69,7 +92,10 @@ def shoot_leftzd(left_zd) :
         
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
-
+        
+        check_groundhit()
+        check_goalposthit()
+        
 # setting
 
 ground = box(pos=vec(0,0,0),size=vec(50,0.1,50),color=color.green)
@@ -78,8 +104,6 @@ ground = box(pos=vec(0,0,0),size=vec(50,0.1,50),color=color.green)
 post1 = box(pos=vec(-4,2,-20),axis=vec(1,0,0),size=vec(0.5,4,2),color=color.red) # left post
 post2 = box(pos=vec(4,2,-20),axis=vec(1,0,0),size=vec(0.5,4,2),color=color.red) # right post
 post3 = box(pos=vec(0,4.25,-20),axis = vec(1,0,0),size=vec(8.5,0.5,2),color=color.red) # top post
-
-# wall = box(pos = vec(0,10,-25),axis=vec(1,0,0),size=vec(20,20,0.5),color=color.white)
 
 # post center 정사영
 post2dpos = vec(0,0,-20)
@@ -100,13 +124,18 @@ shootdir = arrow(pos=ball2dpos,axis=4*hat(ball2dpos-eye2dpos),shaftwidth=0.15,co
 scene.camera.pos = eyepos
 scene.camera.axis = shootdir.axis
 
+btnShoot = button(text="shoot",bind=shootbtn)
+
 angle = radians(1)
 axis = vec(0,1,0)
 origin = ball.pos
 
-while !btnShoot.disabled :
+while btnShoot.disabled==False :
+
     rate(100)
-        
+    
+    if btnShoot.disabled : break
+
     s = keysdown()
     print("You pressed the key", s)  
     
@@ -117,6 +146,7 @@ while !btnShoot.disabled :
         scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
         shootdir.axis=6*hat(scene.camera.axis)
 
+    
 # the most important variable
 # used in final shooting
 shootvec = shootdir.axis
@@ -129,7 +159,7 @@ dpower = 1 # power+=dpower
 
 scene.waitfor('keydown')
 
-while True:
+while btnShoot.disabled :
     rate(100)  # Limit the loop rate for smooth animation
     
     s = keysdown()  # Get the keys that are currently pressed
@@ -138,7 +168,7 @@ while True:
     if 'z' in s and 'right' in s :
         right_zd += dpower
         print("right zd Power :", right_zd)
-    else if  'z' in s and 'left' in s :
+    else if 'z' in s and 'left' in s :
         left_zd += dpower
         print("left zd Power :", left_zd)
     else if 'q' in s and 'd' in s :
