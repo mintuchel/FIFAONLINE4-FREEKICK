@@ -22,23 +22,6 @@ def shootbtn(b) :
     b.disabled=True
     return b.disabled
 
-def check_groundhit() :
-    if ball.pos.y < 0.3 :
-        ball.pos.y = 0.3
-        ball.v.y = -0.8*ball.v.y
-
-def check_goalposthit() :
-    # right left post hit
-    if 3.75 <= abs(ball.pos.x) <= 4.25 and 0 <= ball.pos.y <= 4 and -21 <= ball.pos.z <= -19 : 
-        ball.v.z = -0.3*ball.v.z
-    # top post hit
-    elif -3.75 < ball.pos.x < 4.25 and 4 < ball.pos.y < 4.5 and -21 <= ball.pos.z <= -19 : 
-        ball.v.y = 0.8*ball.v.y
-        ball.v.z = -0.3*ball.v.z
-
-def check_goal() :
-    if abs(ball.pos.x) < 3.75 and 0 <= ball.pos.y < 4 and ball.pos.z <=-19 : return True
-    
     
 def shoot_directd(direct_d) :
 
@@ -52,10 +35,6 @@ def shoot_directd(direct_d) :
         rate(1/dt)
         ball.v+=vec(0,-g*ball.m,0)*dt
         ball.pos += ball.v*dt
-        
-        check_groundhit()
-        check_goalposthit()
-        check_goal()
         
         t+=dt
         
@@ -80,10 +59,6 @@ def shoot_rightzd(right_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
 
-        check_groundhit()
-        check_goalposthit()
-        check_goal()
-        
         t+=dt
         
 def shoot_leftzd(left_zd) :
@@ -106,10 +81,6 @@ def shoot_leftzd(left_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
         
-        check_groundhit()
-        check_goalposthit()
-        check_goal()
-           
         t+=dt
         
 # setting
@@ -125,6 +96,9 @@ post3 = box(pos=vec(0,4.25,-20),axis = vec(1,0,0),size=vec(8.5,0.5,2),color=colo
 post2dpos = vec(0,0,-20)
 
 btnShoot = button(text="shoot",bind=shootbtn)
+
+goal_label = label(pos=scene.center+vec(0,1,0),box=False,height = 30,text='GOAL!',color=color.blue,visible = False)
+miss_label = label(pos=scene.center+vec(0,2,0),box=False,height=30,text='Miss wide!',color=color.blue,visible =False)
 
 while True :
     ball = sphere(pos=vec(random.randint(-15,15),0.3,random.randint(8,15)),radius=0.3,color=color.white)
@@ -202,6 +176,8 @@ while True :
         shoot_directd(direct_d)
         
     scene.waitfor('click')
+    goal_label.visible = False
+    miss_label.visible = False
     btnShoot.disabled = False
     ball.visible = False
-    shootdir.visible = False      
+    shootdir.visible = False
