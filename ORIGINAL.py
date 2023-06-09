@@ -22,7 +22,6 @@ def shootbtn(b) :
     b.disabled=True
     return b.disabled
 
-<<<<<<< HEAD
 def check_groundhit() :
     if ball.pos.y < 0.3 :
         ball.pos.y = 0.3
@@ -35,15 +34,11 @@ def check_goalposthit() :
     # top post hit
     elif -3.75 < ball.pos.x < 4.25 and 4 < ball.pos.y < 4.5 and -21 <= ball.pos.z <= -19 : 
         ball.v.y = 0.8*ball.v.y
-        ball.v.z = -0.3*ball.v.z
+        ball.v.z = -0.5*ball.v.z
 
 def check_goal() :
+    if abs(ball.pos.x) < 3.75 and 0 <= ball.pos.y < 4 and ball.pos.z <=-19 : goal_label.visible = True
     
-    if abs(ball.pos.x) < 3.75 and 0 <= ball.pos.y < 4 and ball.pos.z <=-19 : return True
-    else : return False
-    
-=======
->>>>>>> feature/screen_settings
     
 def shoot_directd(direct_d) :
 
@@ -58,16 +53,13 @@ def shoot_directd(direct_d) :
         ball.v+=vec(0,-g*ball.m,0)*dt
         ball.pos += ball.v*dt
         
-<<<<<<< HEAD
         check_groundhit()
         check_goalposthit()
-        check_goal() 
-
-=======
+        check_goal()
+        
         t+=dt
         
         
->>>>>>> feature/screen_settings
 def shoot_rightzd(right_zd) :
     
     ball.v = right_zd/2*hat(shootvec)+vec(right_zd/3,right_zd/3,-right_zd/4)
@@ -88,13 +80,11 @@ def shoot_rightzd(right_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
 
-<<<<<<< HEAD
         check_groundhit()
         check_goalposthit()
         check_goal()
-=======
+        
         t+=dt
->>>>>>> feature/screen_settings
         
 def shoot_leftzd(left_zd) :
 
@@ -116,13 +106,11 @@ def shoot_leftzd(left_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
         
-<<<<<<< HEAD
         check_groundhit()
         check_goalposthit()
         check_goal()
-=======
+           
         t+=dt
->>>>>>> feature/screen_settings
         
 # setting
     
@@ -138,8 +126,8 @@ post2dpos = vec(0,0,-20)
 
 btnShoot = button(text="shoot",bind=shootbtn)
 
-goal_label = label(pos=scene.center+vec(0,1,0),box=False,height = 30,text='GOAL!',color=color.blue,visible = False)
-miss_label = label(pos=scene.center+vec(0,2,0),box=False,height=30,text='Miss wide!',color=color.blue,visible =False)
+goal_label = label(pos=post2dpos+vec(0,10,0),box=False,height = 30,text='GOAL!',color=color.blue,visible = False)
+miss_label = label(pos=post2dpos+vec(0,10,0),box=False,height=30,text='Miss wide!',color=color.blue,visible =False)
 
 while True :
     ball = sphere(pos=vec(random.randint(-15,15),0.3,random.randint(8,15)),radius=0.3,color=color.white)
@@ -158,67 +146,6 @@ while True :
     scene.camera.pos = eyepos
     scene.camera.axis = shootdir.axis
 
-<<<<<<< HEAD
-btnShoot = button(text="shoot",bind=shootbtn)
-
-angle = radians(1)
-axis = vec(0,1,0)
-origin = ball.pos
-
-while btnShoot.disabled==False :
-
-    rate(100)
-    
-    if btnShoot.disabled : break
-
-    s = keysdown()
-    print("You pressed the key", s)  
-    
-    if 'left' in s: 
-        scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
-        shootdir.axis=6*hat(scene.camera.axis)
-    if 'right' in s: 
-        scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
-        shootdir.axis=6*hat(scene.camera.axis)
-
-    
-# the most important variable
-# used in final shooting
-shootvec = shootdir.axis
-
-right_zd = 0
-left_zd = 0
-direct_d = 0
-
-dpower = 1 # power+=dpower
-
-scene.waitfor('keydown')
-
-while btnShoot.disabled :
-    rate(100)  # Limit the loop rate for smooth animation
-    
-    s = keysdown()  # Get the keys that are currently pressed
-    
-    print(s)
-    if 'z' in s and 'right' in s :
-        right_zd += dpower
-        print("right zd Power :", right_zd)
-    elif 'z' in s and 'left' in s :
-        left_zd += dpower
-        print("left zd Power :", left_zd)
-    elif 'q' in s and 'd' in s :
-        direct_d +=dpower
-        print("direct shoot :",direct_d)
-    elif s==[] :
-        break
-
-if right_zd > 0 :
-    shoot_rightzd(right_zd)
-elif left_zd > 0 :
-    shoot_leftzd(left_zd)
-elif direct_d > 0 :
-    shoot_directd(direct_d)
-=======
     angle = radians(1)
     axis = vec(0,1,0)
     origin = ball.pos
@@ -261,21 +188,24 @@ elif direct_d > 0 :
         if 'z' in s and 'right' in s :
             right_zd += dpower
             print("right zd Power :", right_zd)
-        else if 'z' in s and 'left' in s :
+        elif 'z' in s and 'left' in s :
             left_zd += dpower
             print("left zd Power :", left_zd)
-        else if 'q' in s and 'd' in s :
+        elif 'q' in s and 'd' in s :
             direct_d +=dpower
             print("direct shoot :",direct_d)
-        else if s==[] :
+        elif s==[] :
             break
 
     if right_zd > 0 :
         shoot_rightzd(right_zd)
-    else if left_zd > 0 :
+    elif left_zd > 0 :
         shoot_leftzd(left_zd)
-    else if direct_d > 0 :
+    elif direct_d > 0 :
         shoot_directd(direct_d)
+    
+    if !goal_label.visible :
+        miss_label.visible = True
         
     scene.waitfor('click')
     goal_label.visible = False
@@ -283,4 +213,6 @@ elif direct_d > 0 :
     btnShoot.disabled = False
     ball.visible = False
     shootdir.visible = False
->>>>>>> feature/screen_settings
+
+# checked all the cases
+# ready to merge with master
