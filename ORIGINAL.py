@@ -22,22 +22,25 @@ def shootbtn(b) :
     b.disabled=True
     return b.disabled
 
-# add groundhit function
 def check_groundhit() :
     if ball.pos.y < 0.3 :
         ball.pos.y = 0.3
         ball.v.y = -0.8*ball.v.y
 
-# add goalposthit function
 def check_goalposthit() :
-    
     # right left post hit
     if 3.75 <= abs(ball.pos.x) <= 4.25 and 0 <= ball.pos.y <= 4 and -21 <= ball.pos.z <= -19 : 
         ball.v.z = -0.3*ball.v.z
     # top post hit
-    elif  -3.75 < ball.pos.x < 4.25 and 4 < ball.pos.y < 4.5 and -21 <= ball.pos.z <= -19 : 
+    elif -3.75 < ball.pos.x < 4.25 and 4 < ball.pos.y < 4.5 and -21 <= ball.pos.z <= -19 : 
         ball.v.y = 0.8*ball.v.y
         ball.v.z = -0.3*ball.v.z
+
+def check_goal() :
+    
+    if abs(ball.pos.x) < 3.75 and 0 <= ball.pos.y < 4 and ball.pos.z <=-19 : return True
+    else : return False
+    
     
 def shoot_directd(direct_d) :
 
@@ -52,8 +55,8 @@ def shoot_directd(direct_d) :
         
         check_groundhit()
         check_goalposthit()
-        
-        
+        check_goal() 
+
 def shoot_rightzd(right_zd) :
     
     ball.v = right_zd/2*hat(shootvec)+vec(right_zd/3,right_zd/3,-right_zd/4)
@@ -74,6 +77,7 @@ def shoot_rightzd(right_zd) :
 
         check_groundhit()
         check_goalposthit()
+        check_goal()
         
 def shoot_leftzd(left_zd) :
 
@@ -95,6 +99,7 @@ def shoot_leftzd(left_zd) :
         
         check_groundhit()
         check_goalposthit()
+        check_goal()
         
 # setting
 
@@ -168,18 +173,18 @@ while btnShoot.disabled :
     if 'z' in s and 'right' in s :
         right_zd += dpower
         print("right zd Power :", right_zd)
-    else if 'z' in s and 'left' in s :
+    elif 'z' in s and 'left' in s :
         left_zd += dpower
         print("left zd Power :", left_zd)
-    else if 'q' in s and 'd' in s :
+    elif 'q' in s and 'd' in s :
         direct_d +=dpower
         print("direct shoot :",direct_d)
-    else if s==[] :
+    elif s==[] :
         break
 
 if right_zd > 0 :
     shoot_rightzd(right_zd)
-else if left_zd > 0 :
+elif left_zd > 0 :
     shoot_leftzd(left_zd)
-else if direct_d > 0 :
+elif direct_d > 0 :
     shoot_directd(direct_d)
