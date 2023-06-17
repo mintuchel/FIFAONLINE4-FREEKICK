@@ -1,27 +1,34 @@
 # FIFA Online 4-FREEKICK
 
-This game is for practicing FIFA Online 4-FREEKICK set-piece.   
+This game is designed for practicing FIFA Online 4-FREEKICK set-piece.
+
 ## Build
 
-This code requires vpython module. In your vscode you can download the vpython module and run this code.  
-The $PATH or tasks.json file does not need to be modified because it is ran by online-compiler not with your in-computer compiler.
+To run this code, you need the vpython module. You have two options:
 
-use vscode terminal to install vpython
+I recommend you to run this code on Web VPython since Web VPython has a standardized key-input format
+  
+1. Use Web VPython directly.
+   - Visit [glowscript.org](https://www.glowscript.org).
+   - Sign in and click Create a new file.
+   - Copy the code and run it.
 
-+ '''pip install vpython'''
+2. Download the vpython module and run the code on vscode.
+   - Install the vpython module in the vscode terminal using the command: `pip install vpython`.
+   - Create a .py file for this game and import the vpython module using `from vpython import *`.
 
-make .py file for this game
-
-+ '''from vpython import *'''
+Note: The $PATH or tasks.json file does not need to be modified because the code is run by an online compiler, not your local compiler.  
 
 ## How to Play
 
-Control your freekick direction with your left-right keydowns.
+Control the direction of your freekick using the left and right arrow keys.
 
-You can shoot Driven Shot(Q+D) or Bananenflanke(Z+D) and the shot type is determined by your keystroke.
+You can perform a Driven Shot (Q+D) or a Bananenflanke (Z+D) by pressing the corresponding key combination.
 
-For your freekick practice the freekick spot is random so there are no parameters that you should set.   
+The shot type is determined by your keystrokes.
 
-Your only mission is to press the right key and fit your intended gage for your freekick.
+During your freekick practice, the freekick spot is randomized, so there are no specific parameters that you need to set.
 
-All settings are the same as those in FIFA Online 4. 
+Your goal is to press the right key and match your intended power gauge for the freekick.
+
+All settings in the game are the same as those in FIFA Online 4.
