@@ -59,7 +59,7 @@ def shoot_directd(direct_d) :
         ball.v+=vec(0,-g*ball.m,0)*dt
         ball.pos += ball.v*dt
         
-        check_wallhit()
+        #check_wallhit()
         check_groundhit()
         check_goalposthit()
         check_goal()
@@ -87,7 +87,7 @@ def shoot_rightzd(right_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
 
-        check_wallhit()
+        #check_wallhit()
         check_groundhit()
         check_goalposthit()
         check_goal()
@@ -114,12 +114,61 @@ def shoot_leftzd(left_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
         
-        check_wallhit()
+        #check_wallhit()
         check_groundhit()
         check_goalposthit()
         check_goal()
            
         t+=dt
+        
+def set_wall(linepos) :
+    global player1, player2, player3, player4
+    global head1, head2, head3, head4
+    
+    midpoint = linepos+vec(0,0.75,0)
+    wall_axis = cross(vec(0,1,0), shootdir.axis)
+    
+    # have problems here
+    startpoint = midpoint - 1.05*hat(wall_axis)
+    
+    player1 = box(pos = startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    head1 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+    
+    startpoint+= hat(wall_axis)*0.7
+    
+    player2 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    head2 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+    
+    startpoint+= hat(wall_axis)*0.7
+    
+    player3 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    head3 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+    
+    startpoint+= hat(wall_axis)*0.7
+    
+    player4 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    head4 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+
+def erase_wall() :
+    player1.visible = False
+    player2.visible = False
+    player3.visible = False
+    player4.visible = False
+    
+    head1.visible = False
+    head2.visible = False
+    head3.visible = False
+    head4.visible = False
+    
+def check_wallhit() :
+    
+    if
+    if 3.75 <= abs(ball.pos.x) <= 4.25 and 0 <= ball.pos.y <= 4 and -21 <= ball.pos.z <= -19 : 
+        ball.v.z = -0.3*ball.v.z
+    # top post hit
+    elif -3.75 < ball.pos.x < 4.25 and 4 < ball.pos.y < 4.5 and -21 <= ball.pos.z <= -19 : 
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
         
 # setting
     
@@ -154,22 +203,10 @@ while True :
     scene.camera.pos = eyepos
     scene.camera.axis = shootdir.axis
     
-    linepos = ball.pos + hat(shootdir.axis)*10
-    wall = box(pos=linepos + vec(0,0.7,0),axis=cross(vec(0,1,0),shootdir.axis),size = vec(3,2,0.2),texture=textures.wood)
+    linepos = ball.pos + hat(shootdir.axis)*10 - vec(0,0.3,0)
     
-    #midpoint = linepos+vec(0,0.75,0)
-    #wall_axis = cross(vec(0,1,0), shootdir.axis)
-    
-    #startpoint = midpoint - 1.2*hat(wall_axis)
-    
-    #player1 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    #head1 = sphere(pos = startpoint + vec(0,0.075+0.4,0), radius = 0.4, color=color.white)
-    #startpoint+= hat(wall_axis)*0.8
-    #player2 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    #startpoint+= hat(wall_axis)*0.8
-    #player3 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    #startpoint+= hat(wall_axis)*0.8
-    #player4 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    # setting defender wall
+    set_wall(linepos)
     
     angle = radians(1)
     axis = vec(0,1,0)
@@ -236,6 +273,6 @@ while True :
     goal_label.visible = False
     miss_label.visible = False
     btnShoot.disabled = False
-    wall.visible = False
+    erase_wall()
     ball.visible = False
     shootdir.visible = False
