@@ -38,13 +38,6 @@ def check_goalposthit() :
 
 def check_goal() :
     if abs(ball.pos.x) < 3.5 and 0 <= ball.pos.y < 4 and -21<= ball.pos.z <=-19 : goal_label.visible = True
-
-def check_wallhit() :
-    if mag(ball.pos - wall.pos) < 1.2 :
-        ball.v.y = 0.8*ball.v.y
-        ball.v.z = -0.5*ball.v.z
-    
-    
     
 def shoot_directd(direct_d) :
 
@@ -219,14 +212,11 @@ while True :
     scene.camera.pos = eyepos
     scene.camera.axis = shootdir.axis
     
-    linepos = ball.pos + hat(shootdir.axis)*10 - vec(0,0.3,0)
+    # wall distance 12
+    linepos = ball.pos + hat(shootdir.axis)*12 - vec(0,0.3,0)
     
     # setting defender wall
     set_wall(linepos)
-    
-    angle = radians(1)
-    axis = vec(0,1,0)
-    origin = ball.pos
 
     while btnShoot.disabled==False :
 
@@ -238,10 +228,10 @@ while True :
         #print("You pressed the key", s)  
     
         if 'left' in s: 
-            scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
+            scene.camera.rotate(angle = radians(0.5), axis = vec(0,1,0), origin = ball.pos)
             shootdir.axis=6*hat(scene.camera.axis)
         if 'right' in s: 
-            scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
+            scene.camera.rotate(angle = radians(-0.5), axis = vec(0,1,0), origin = ball.pos)
             shootdir.axis=6*hat(scene.camera.axis)
 
     
@@ -258,6 +248,7 @@ while True :
     scene.waitfor('keydown')
     
     while btnShoot.disabled :
+        
         rate(100)  # Limit the loop rate for smooth animation
     
         s = keysdown()  # Get the keys that are currently pressed
@@ -275,6 +266,8 @@ while True :
         elif s==[] :
             break
 
+    shootdir.visible = False
+    
     if right_zd > 0 :
         shoot_rightzd(right_zd)
     elif left_zd > 0 :
@@ -286,9 +279,10 @@ while True :
         miss_label.visible = True
         
     scene.waitfor('click')
+    
     goal_label.visible = False
     miss_label.visible = False
     btnShoot.disabled = False
-    erase_wall()
     ball.visible = False
-    shootdir.visible = False
+
+    erase_wall()
