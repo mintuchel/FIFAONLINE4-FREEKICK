@@ -38,13 +38,6 @@ def check_goalposthit() :
 
 def check_goal() :
     if abs(ball.pos.x) < 3.5 and 0 <= ball.pos.y < 4 and -21<= ball.pos.z <=-19 : goal_label.visible = True
-
-def check_wallhit() :
-    if mag(ball.pos - wall.pos) < 1.2 :
-        ball.v.y = 0.8*ball.v.y
-        ball.v.z = -0.5*ball.v.z
-    
-    
     
 def shoot_directd(direct_d) :
 
@@ -121,6 +114,71 @@ def shoot_leftzd(left_zd) :
            
         t+=dt
         
+def set_wall(linepos) :
+    # wall info
+    # 0.6 x 1.5 x 0.2
+    
+    # defender
+    global d1, d2, d3, d4
+    # defender head
+    global dh1, dh2, dh3, dh4
+    
+    midpoint = linepos+vec(0,0.75,0)
+    wall_axis = cross(vec(0,1,0), shootdir.axis)
+    startpoint = midpoint - 1.05*hat(wall_axis)
+    
+    d1 = box(pos = startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    dh1 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+    
+    startpoint+= hat(wall_axis)*0.7
+    
+    d2 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    dh2 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+    
+    startpoint+= hat(wall_axis)*0.7
+    
+    d3 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    dh3 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+    
+    startpoint+= hat(wall_axis)*0.7
+    
+    d4 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    dh4 = sphere(pos = startpoint + vec(0,0.75+0.3,0), radius = 0.3, texture = textures.wood)
+
+def erase_wall() :
+    d1.visible = False;
+    d2.visible = False;
+    d3.visible = False;
+    d4.visible = False;
+    
+    dh1.visible = False;
+    dh2.visible = False;
+    dh3.visible = False;
+    dh4.visible = False;
+    
+def check_wallhit() :
+    
+    # if head collision
+    if mag(ball.pos - dh1.pos) < 0.3 or mag(ball.pos-dh2.pos) < 0.3 or mag(ball.pos-dh3.pos) < 0.3 or mag(ball.pos - dh4.pos) < 0.3 :
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
+    
+    else if mag(ball.pos - d1.pos) < 0.9 :
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
+        
+    else if mag(ball.pos - d2.pos) < 0.9 :
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
+    
+    else if mag(ball.pos - d3.pos) < 0.9 :
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
+    
+    else if mag(ball.pos - d4.pos) < 0.9 :
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
+        
 # setting
     
 ground = box(pos=vec(0,0,0),size=vec(50,0.1,50),color=color.green)
@@ -154,26 +212,11 @@ while True :
     scene.camera.pos = eyepos
     scene.camera.axis = shootdir.axis
     
-    linepos = ball.pos + hat(shootdir.axis)*10
-    wall = box(pos=linepos + vec(0,0.7,0),axis=cross(vec(0,1,0),shootdir.axis),size = vec(3,2,0.2),texture=textures.wood)
+    # wall distance 12
+    linepos = ball.pos + hat(shootdir.axis)*12 - vec(0,0.3,0)
     
-    #midpoint = linepos+vec(0,0.75,0)
-    #wall_axis = cross(vec(0,1,0), shootdir.axis)
-    
-    #startpoint = midpoint - 1.2*hat(wall_axis)
-    
-    #player1 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    #head1 = sphere(pos = startpoint + vec(0,0.075+0.4,0), radius = 0.4, color=color.white)
-    #startpoint+= hat(wall_axis)*0.8
-    #player2 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    #startpoint+= hat(wall_axis)*0.8
-    #player3 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    #startpoint+= hat(wall_axis)*0.8
-    #player4 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
-    
-    angle = radians(1)
-    axis = vec(0,1,0)
-    origin = ball.pos
+    # setting defender wall
+    set_wall(linepos)
 
     while btnShoot.disabled==False :
 
@@ -185,10 +228,10 @@ while True :
         #print("You pressed the key", s)  
     
         if 'left' in s: 
-            scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
+            scene.camera.rotate(angle = radians(0.5), axis = vec(0,1,0), origin = ball.pos)
             shootdir.axis=6*hat(scene.camera.axis)
         if 'right' in s: 
-            scene.camera.rotate(angle=radians(-1), axis=axis, origin=origin)
+            scene.camera.rotate(angle = radians(-0.5), axis = vec(0,1,0), origin = ball.pos)
             shootdir.axis=6*hat(scene.camera.axis)
 
     
@@ -205,6 +248,7 @@ while True :
     scene.waitfor('keydown')
     
     while btnShoot.disabled :
+        
         rate(100)  # Limit the loop rate for smooth animation
     
         s = keysdown()  # Get the keys that are currently pressed
@@ -222,6 +266,8 @@ while True :
         elif s==[] :
             break
 
+    shootdir.visible = False
+    
     if right_zd > 0 :
         shoot_rightzd(right_zd)
     elif left_zd > 0 :
@@ -233,9 +279,10 @@ while True :
         miss_label.visible = True
         
     scene.waitfor('click')
+    
     goal_label.visible = False
     miss_label.visible = False
     btnShoot.disabled = False
-    wall.visible = False
     ball.visible = False
-    shootdir.visible = False
+
+    erase_wall()
