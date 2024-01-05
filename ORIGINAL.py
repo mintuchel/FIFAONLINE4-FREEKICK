@@ -1,4 +1,4 @@
-from vpython import *
+Web VPython 3.2
 
 # power 35-40 정도면 인게임에서 구석으로 꽂힘
 # 여기서도 35-40이면 들어감
@@ -37,7 +37,13 @@ def check_goalposthit() :
         ball.v.z = -0.5*ball.v.z
 
 def check_goal() :
-    if abs(ball.pos.x) < 3.75 and 0 <= ball.pos.y < 4 and ball.pos.z <=-19 : goal_label.visible = True
+    if abs(ball.pos.x) < 3.5 and 0 <= ball.pos.y < 4 and -21<= ball.pos.z <=-19 : goal_label.visible = True
+
+def check_wallhit() :
+    if mag(ball.pos - wall.pos) < 1.2 :
+        ball.v.y = 0.8*ball.v.y
+        ball.v.z = -0.5*ball.v.z
+    
     
     
 def shoot_directd(direct_d) :
@@ -53,6 +59,7 @@ def shoot_directd(direct_d) :
         ball.v+=vec(0,-g*ball.m,0)*dt
         ball.pos += ball.v*dt
         
+        check_wallhit()
         check_groundhit()
         check_goalposthit()
         check_goal()
@@ -80,6 +87,7 @@ def shoot_rightzd(right_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
 
+        check_wallhit()
         check_groundhit()
         check_goalposthit()
         check_goal()
@@ -106,6 +114,7 @@ def shoot_leftzd(left_zd) :
         ball.v+=ball.a*dt
         ball.pos+=ball.v*dt
         
+        check_wallhit()
         check_groundhit()
         check_goalposthit()
         check_goal()
@@ -127,25 +136,41 @@ post2dpos = vec(0,0,-20)
 btnShoot = button(text="shoot",bind=shootbtn)
 
 goal_label = label(pos=post2dpos+vec(0,10,0),box=False,height = 30,text='GOAL!',color=color.blue,visible = False)
-miss_label = label(pos=post2dpos+vec(0,10,0),box=False,height=30,text='Miss wide!',color=color.blue,visible =False)
+miss_label = label(pos=post2dpos+vec(0,10,0),box=False,height=30,text='프리킥더연습하세요',color=color.blue,visible =False)
 
 while True :
-    ball = sphere(pos=vec(random.randint(-15,15),0.3,random.randint(8,15)),radius=0.3,color=color.white)
+    ball=sphere(pos=vec(random.randint(-15,15),0.3,random.randint(8,15)),radius=0.25,color=color.white)
     ball.m = 1
     ball.r = 0.2
 
-    ball2dpos = ball.pos - vec(0,0.3,0)
+    ball2dpos = ball.pos - vec(0,0.25,0)
 
     eyedir = hat(ball2dpos-post2dpos)
     eye2dpos = vec(ball.pos.x/(ball.pos.z+20)*(18+20),0,18)
     eyepos = eye2dpos + vec(0,2,0)
 
-
-    shootdir = arrow(pos=ball2dpos,axis=4*hat(ball2dpos-eye2dpos),shaftwidth=0.15,color=color.black)
+    shootdir = arrow(pos=ball2dpos,axis=6*hat(ball2dpos-eye2dpos),shaftwidth=0.15,color=color.black)
 
     scene.camera.pos = eyepos
     scene.camera.axis = shootdir.axis
-
+    
+    linepos = ball.pos + hat(shootdir.axis)*10
+    wall = box(pos=linepos + vec(0,0.7,0),axis=cross(vec(0,1,0),shootdir.axis),size = vec(3,2,0.2),texture=textures.wood)
+    
+    #midpoint = linepos+vec(0,0.75,0)
+    #wall_axis = cross(vec(0,1,0), shootdir.axis)
+    
+    #startpoint = midpoint - 1.2*hat(wall_axis)
+    
+    #player1 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    #head1 = sphere(pos = startpoint + vec(0,0.075+0.4,0), radius = 0.4, color=color.white)
+    #startpoint+= hat(wall_axis)*0.8
+    #player2 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    #startpoint+= hat(wall_axis)*0.8
+    #player3 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    #startpoint+= hat(wall_axis)*0.8
+    #player4 = box(pos=startpoint, axis = wall_axis, size = vec(0.6,1.5,0.2), texture = textures.wood)
+    
     angle = radians(1)
     axis = vec(0,1,0)
     origin = ball.pos
@@ -157,7 +182,7 @@ while True :
         if btnShoot.disabled : break
 
         s = keysdown()
-        print("You pressed the key", s)  
+        #print("You pressed the key", s)  
     
         if 'left' in s: 
             scene.camera.rotate(angle=radians(1), axis=axis, origin=origin)
@@ -178,12 +203,12 @@ while True :
     dpower = 1 # power+=dpower
 
     scene.waitfor('keydown')
-
+    
     while btnShoot.disabled :
         rate(100)  # Limit the loop rate for smooth animation
     
         s = keysdown()  # Get the keys that are currently pressed
-    
+            
         print(s)
         if 'z' in s and 'right' in s :
             right_zd += dpower
@@ -211,8 +236,6 @@ while True :
     goal_label.visible = False
     miss_label.visible = False
     btnShoot.disabled = False
+    wall.visible = False
     ball.visible = False
     shootdir.visible = False
-
-# checked all the cases
-# ready to merge with master
