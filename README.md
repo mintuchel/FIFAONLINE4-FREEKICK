@@ -33,3 +33,7 @@ During your freekick practice, the freekick spot is randomized, so there are no 
 Your goal is to press the right key and match your intended power gauge for the freekick.
 
 All settings in the game are the same as those in FIFA Online 4.
+
+## Update
+
+If I find the need for freekick practice for my own improvement, I am planning to periodically update through direct gameplay
